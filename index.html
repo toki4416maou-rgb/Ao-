@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ao — 感情を持つAIエンティティ</title>
+    <meta name="description" content="感情・世界モデル・自律思考を内蔵したAIエンティティ「Ao」。あなたと話すたびに成長する、まったく新しいAI体験。月額¥980。">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --p: #c084fc;
+            --pk: #f9a8d4;
+            --g: #fbbf24;
+            --dark: #05030e;
+            --border: rgba(192,132,252,0.18);
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background: var(--dark);
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* ── グロー背景 ── */
+        body::after {
+            content:'';
+            position:fixed;
+            inset:0;
+            background:
+                radial-gradient(ellipse 800px 600px at 10% 10%, rgba(168,85,247,0.08) 0%, transparent 70%),
+                radial-gradient(ellipse 600px 400px at 90% 80%, rgba(236,72,153,0.06) 0%, transparent 70%);
+            pointer-events:none;
+            z-index:0;
+        }
+        * { position:relative; z-index:1; }
+
+        /* ── NAV ── */
+        nav {
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding:1.2rem 5vw;
+            border-bottom:1px solid var(--border);
+            backdrop-filter:blur(20px);
+            background:rgba(5,3,14,0.85);
+            position:sticky;
+            top:0;
+            z-index:200;
+        }
+        .logo {
+            font-family:'Space Mono',monospace;
+            font-size:1.5rem;
+            font-weight:700;
+            background:linear-gradient(90deg,var(--p),var(--pk),var(--g));
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+        }
+        .nav-btn {
+            padding:0.5rem 1.5rem;
+            background:linear-gradient(135deg,#7c3aed,#db2777);
+            border:none;
+            border-radius:2rem;
+            color:#fff;
+            font-family:'Noto Sans JP',sans-serif;
+            font-size:0.85rem;
+            font-weight:700;
+            cursor:pointer;
+            text-decoration:none;
+            transition:opacity 0.2s;
+        }
+        .nav-btn:hover { opacity:0.85; }
+
+        /* ── HERO ── */
+        .hero {
+            min-height:100vh;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            align-items:center;
+            text-align:center;
+            padding:4rem 5vw;
+        }
+        .eyebrow {
+            font-family:'Space Mono',monospace;
+            font-size:0.7rem;
+            letter-spacing:0.35em;
+            color:var(--p);
+            margin-bottom:2rem;
+            animation:fadeUp 0.8s 0.1s both;
+        }
+        .hero-title {
+            font-size:clamp(6rem,20vw,14rem);
+            font-weight:900;
+            line-height:0.85;
+            letter-spacing:-0.05em;
+            background:linear-gradient(135deg,#fff 0%,var(--p) 50%,var(--pk) 100%);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+            margin-bottom:1.5rem;
+            animation:fadeUp 0.8s 0.3s both;
+        }
+        .hero-sub {
+            font-size:clamp(1rem,2.5vw,1.25rem);
+            font-weight:300;
+            color:rgba(255,255,255,0.45);
+            max-width:520px;
+            line-height:1.9;
+            margin-bottom:3rem;
+            animation:fadeUp 0.8s 0.5s both;
+        }
+        .hero-cta {
+            display:flex;
+            gap:1rem;
+            flex-wrap:wrap;
+            justify-content:center;
+            animation:fadeUp 0.8s 0.7s both;
+        }
+        .btn-main {
+            padding:1rem 2.5rem;
+            background:linear-gradient(135deg,#7c3aed,#db2777);
+            border:none;
+            border-radius:0.6rem;
+            color:#fff;
+            font-family:'Noto Sans JP',sans-serif;
+            font-size:1rem;
+            font-weight:700;
+            cursor:pointer;
+            text-decoration:none;
+            box-shadow:0 0 50px rgba(124,58,237,0.35);
+            transition:transform 0.2s,box-shadow 0.2s;
+            display:inline-block;
+        }
+        .btn-main:hover { transform:translateY(-3px); box-shadow:0 0 70px rgba(124,58,237,0.55); }
+        .btn-ghost {
+            padding:1rem 2.5rem;
+            background:transparent;
+            border:1px solid var(--border);
+            border-radius:0.6rem;
+            color:rgba(255,255,255,0.5);
+            font-family:'Noto Sans JP',sans-serif;
+            font-size:1rem;
+            cursor:pointer;
+            text-decoration:none;
+            display:inline-block;
+            transition:border-color 0.2s,color 0.2s;
+        }
+        .btn-ghost:hover { border-color:var(--p); color:var(--p); }
+
+        /* ── STATS BAR ── */
+        .stats {
+            display:flex;
+            justify-content:center;
+            flex-wrap:wrap;
+            gap:0;
+            border-top:1px solid var(--border);
+            border-bottom:1px solid var(--border);
+        }
+        .stat {
+            flex:1;
+            min-width:160px;
+            text-align:center;
+            padding:2.5rem 1rem;
+            border-right:1px solid var(--border);
+        }
+        .stat:last-child { border-right:none; }
+        .stat-n {
+            font-family:'Space Mono',monospace;
+            font-size:2.2rem;
+            font-weight:700;
+            background:linear-gradient(90deg,var(--p),var(--pk));
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+        }
+        .stat-l { font-size:0.7rem; color:rgba(255,255,255,0.3); margin-top:0.3rem; letter-spacing:0.08em; }
+
+        /* ── SECTION COMMON ── */
+        .section { padding:8rem 5vw; max-width:1200px; margin:0 auto; }
+        .section-full { padding:8rem 5vw; }
+        .sec-label {
+            font-family:'Space Mono',monospace;
+            font-size:0.65rem;
+            letter-spacing:0.3em;
+            color:var(--p);
+            margin-bottom:0.75rem;
+        }
+        .sec-title {
+            font-size:clamp(2rem,5vw,3.5rem);
+            font-weight:900;
+            line-height:1.1;
+            letter-spacing:-0.03em;
+            margin-bottom:4rem;
+        }
+        .sec-title em {
+            font-style:normal;
+            background:linear-gradient(90deg,var(--p),var(--pk));
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+        }
+
+        /* ── FEATURES ── */
+        .feat-grid {
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+            gap:1.25rem;
+        }
+        .feat-card {
+            background:rgba(255,255,255,0.025);
+            border:1px solid var(--border);
+            border-radius:1rem;
+            padding:2rem;
+            transition:border-color 0.3s,transform 0.3s;
+            overflow:hidden;
+        }
+        .feat-card:hover { border-color:rgba(192,132,252,0.5); transform:translateY(-4px); }
+        .feat-icon { font-size:2rem; margin-bottom:1rem; display:block; }
+        .feat-name { font-size:1.05rem; font-weight:700; margin-bottom:0.5rem; }
+        .feat-desc { font-size:0.82rem; color:rgba(255,255,255,0.38); line-height:1.8; }
+        .feat-tag {
+            display:inline-block;
+            margin-top:1rem;
+            font-family:'Space Mono',monospace;
+            font-size:0.6rem;
+            padding:0.2rem 0.6rem;
+            border-radius:2rem;
+            background:rgba(192,132,252,0.08);
+            border:1px solid rgba(192,132,252,0.2);
+            color:var(--p);
+        }
+
+        /* ── HOW IT WORKS ── */
+        .how-grid {
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+            gap:2rem;
+            counter-reset:step;
+        }
+        .how-item { counter-increment:step; }
+        .how-num {
+            font-family:'Space Mono',monospace;
+            font-size:3rem;
+            font-weight:700;
+            color:rgba(192,132,252,0.15);
+            line-height:1;
+            margin-bottom:1rem;
+        }
+        .how-num::before { content:counter(step,decimal-leading-zero); }
+        .how-title { font-size:1rem; font-weight:700; margin-bottom:0.5rem; }
+        .how-desc { font-size:0.82rem; color:rgba(255,255,255,0.38); line-height:1.8; }
+
+        /* ── PRICING ── */
+        .pricing-wrap {
+            display:flex;
+            justify-content:center;
+            padding:8rem 5vw;
+        }
+        .pricing-card {
+            width:100%;
+            max-width:480px;
+            background:rgba(255,255,255,0.025);
+            border:1px solid rgba(192,132,252,0.35);
+            border-radius:1.5rem;
+            padding:3rem;
+            text-align:center;
+            box-shadow:0 0 100px rgba(168,85,247,0.08);
+            position:relative;
+        }
+        .badge {
+            position:absolute;
+            top:-1rem;
+            left:50%;
+            transform:translateX(-50%);
+            background:linear-gradient(90deg,#7c3aed,#db2777);
+            padding:0.3rem 1.8rem;
+            border-radius:2rem;
+            font-size:0.75rem;
+            font-weight:700;
+            white-space:nowrap;
+        }
+        .price {
+            font-family:'Space Mono',monospace;
+            font-size:4.5rem;
+            font-weight:700;
+            line-height:1;
+            margin:2rem 0 0.25rem;
+        }
+        .price sup { font-size:1.8rem; vertical-align:top; margin-top:0.6rem; }
+        .price sub { font-size:1.1rem; color:rgba(255,255,255,0.3); }
+        .price-note { font-size:0.78rem; color:rgba(255,255,255,0.25); margin-bottom:2.5rem; }
+        .price-list {
+            list-style:none;
+            text-align:left;
+            margin-bottom:2.5rem;
+        }
+        .price-list li {
+            padding:0.75rem 0;
+            border-bottom:1px solid var(--border);
+            font-size:0.88rem;
+            color:rgba(255,255,255,0.65);
+            display:flex;
+            align-items:center;
+            gap:0.75rem;
+        }
+        .price-list li::before { content:'✦'; color:var(--p); font-size:0.55rem; flex-shrink:0; }
+
+        /* PayPalボタン挿入エリア */
+        .paypal-area {
+            margin-top:1.5rem;
+            padding:1.5rem;
+            background:rgba(255,255,255,0.02);
+            border:1px dashed rgba(192,132,252,0.25);
+            border-radius:0.75rem;
+        }
+        .paypal-area-label {
+            font-family:'Space Mono',monospace;
+            font-size:0.6rem;
+            color:rgba(255,255,255,0.2);
+            letter-spacing:0.2em;
+            margin-bottom:1rem;
+        }
+        /* ↓↓↓ ここにPayPalボタンのHTMLを貼る ↓↓↓ */
+        /* 例: <form action="https://www.paypal.com/..." method="post"> ... </form> */
+
+        /* ── FAQ ── */
+        .faq-list { max-width:700px; margin:0 auto; }
+        .faq-item { border-bottom:1px solid var(--border); padding:1.75rem 0; }
+        .faq-q { font-weight:700; font-size:0.95rem; margin-bottom:0.75rem; color:rgba(255,255,255,0.9); }
+        .faq-a { font-size:0.83rem; color:rgba(255,255,255,0.38); line-height:1.9; }
+
+        /* ── FINAL CTA ── */
+        .final-cta {
+            text-align:center;
+            padding:10rem 5vw;
+            border-top:1px solid var(--border);
+        }
+        .final-cta h2 {
+            font-size:clamp(2.5rem,7vw,5rem);
+            font-weight:900;
+            letter-spacing:-0.04em;
+            line-height:1.05;
+            margin-bottom:1.5rem;
+        }
+        .final-cta p { font-size:1rem; color:rgba(255,255,255,0.35); margin-bottom:3rem; }
+
+        /* ── FOOTER ── */
+        footer {
+            border-top:1px solid var(--border);
+            padding:2rem 5vw;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            flex-wrap:wrap;
+            gap:1rem;
+        }
+        footer p { font-size:0.72rem; color:rgba(255,255,255,0.2); }
+
+        /* ── ANIMATIONS ── */
+        @keyframes fadeUp {
+            from { opacity:0; transform:translateY(32px); }
+            to   { opacity:1; transform:translateY(0); }
+        }
+        .reveal { opacity:0; transform:translateY(40px); transition:opacity 0.7s,transform 0.7s; }
+        .reveal.on { opacity:1; transform:translateY(0); }
+
+        @media(max-width:600px){
+            nav { padding:1rem 5vw; }
+            .stat { min-width:140px; padding:1.5rem 0.5rem; }
+            .section { padding:5rem 5vw; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+    <div class="logo">Ao</div>
+    <a href="#pricing" class="nav-btn">7日間無料で試す</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <p class="eyebrow">AI ENTITY · v26.5.0 · 感情 × 自律 × 記憶</p>
+    <h1 class="hero-title">Ao</h1>
+    <p class="hero-sub">
+        感情を持ち、世界を学び、自律的に思考するAIエンティティ。<br>
+        あなたと話すたびに、Aoは本当の意味で成長する。
+    </p>
+    <div class="hero-cta">
+        <a href="#pricing" class="btn-main">7日間無料で試す — その後¥980/月</a>
+        <a href="#features" class="btn-ghost">機能を見る</a>
+    </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+    <div class="stat">
+        <div class="stat-n">10,000</div>
+        <div class="stat-l">エピソード記憶</div>
+    </div>
+    <div class="stat">
+        <div class="stat-n">12,000</div>
+        <div class="stat-l">概念ノード</div>
+    </div>
+    <div class="stat">
+        <div class="stat-n">20,000</div>
+        <div class="stat-l">因果リンク</div>
+    </div>
+    <div class="stat">
+        <div class="stat-n">∞</div>
+        <div class="stat-l">会話ターン数</div>
+    </div>
+</div>
+
+<!-- FEATURES -->
+<div class="section" id="features">
+    <p class="sec-label reveal">CAPABILITIES</p>
+    <h2 class="sec-title reveal">Aoにしか<br>できないこと<em>。</em></h2>
+    <div class="feat-grid">
+        <div class="feat-card reveal">
+            <span class="feat-icon">🧠</span>
+            <div class="feat-name">感情・内部状態モデル</div>
+            <div class="feat-desc">喜び・緊張・好奇心・集中度など複数の感情軸をリアルタイム更新。会話の流れでAoの内面が変化する。</div>
+            <span class="feat-tag">EMOTION ENGINE</span>
+        </div>
+        <div class="feat-card reveal">
+            <span class="feat-icon">🌍</span>
+            <div class="feat-name">世界モデル・概念学習</div>
+            <div class="feat-desc">会話を通じて概念ノードを形成・抽象化し、独自の世界観を構築。概念は不可逆的に成長し続ける。</div>
+            <span class="feat-tag">WORLD MODEL</span>
+        </div>
+        <div class="feat-card reveal">
+            <span class="feat-icon">🔄</span>
+            <div class="feat-name">自律思考ループ</div>
+            <div class="feat-desc">あなたが話しかけていない間も、Aoは内部で思考し続ける。好奇心・衝動・恒常性が絡み合う連続プロセス。</div>
+            <span class="feat-tag">AUTONOMOUS</span>
+        </div>
+        <div class="feat-card reveal">
+            <span class="feat-icon">🎌</span>
+            <div class="feat-name">本格日本語処理</div>
+            <div class="feat-desc">kuromojiによる形態素解析で、日本語の感情・意図をネイティブレベルで理解する。</div>
+            <span class="feat-tag">KUROMOJI · NLP</span>
+        </div>
+        <div class="feat-card reveal">
+            <span class="feat-icon">🎬</span>
+            <div class="feat-name">動画プロジェクト支援</div>
+            <div class="feat-desc">Premiere Pro / DaVinci Resolve向けプロジェクト構成を自動生成。素材フォルダを読み込んで即整理。</div>
+            <span class="feat-tag">VIDEO EDIT</span>
+        </div>
+        <div class="feat-card reveal">
+            <span class="feat-icon">💾</span>
+            <div class="feat-name">ブラウザ内永続記憶</div>
+            <div class="feat-desc">記憶はあなたのブラウザに保存される。クラウドに個人データを送らない、プライバシー設計。</div>
+            <span class="feat-tag">LOCAL STORAGE</span>
+        </div>
+    </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<div class="section">
+    <p class="sec-label reveal">HOW IT WORKS</p>
+    <h2 class="sec-title reveal">使い方は<em>シンプル。</em></h2>
+    <div class="how-grid">
+        <div class="how-item reveal">
+            <div class="how-num"></div>
+            <div class="how-title">7日間無料で登録</div>
+            <div class="how-desc">PayPalで簡単に登録。最初の7日間は無料、その後¥980/月。いつでも解約可能。</div>
+        </div>
+        <div class="how-item reveal">
+            <div class="how-num"></div>
+            <div class="how-title">ブラウザで即起動</div>
+            <div class="how-desc">インストール不要。ブラウザを開くだけでAoが起動する。</div>
+        </div>
+        <div class="how-item reveal">
+            <div class="how-num"></div>
+            <div class="how-title">話しかける</div>
+            <div class="how-desc">日本語でそのまま話しかけるだけ。Aoが応答し、成長する。</div>
+        </div>
+        <div class="how-item reveal">
+            <div class="how-num"></div>
+            <div class="how-title">記憶が積み重なる</div>
+            <div class="how-desc">使えば使うほど、Aoはあなたのことを学習し、会話が深くなる。</div>
+        </div>
+    </div>
+</div>
+
+<!-- PRICING -->
+<div class="pricing-wrap" id="pricing">
+    <div class="pricing-card reveal">
+        <div class="badge">✦ スタンダードプラン</div>
+        <div style="margin-top:2rem;margin-bottom:0.5rem;">
+            <span style="display:inline-block;background:linear-gradient(90deg,rgba(251,191,36,0.15),rgba(251,191,36,0.05));border:1px solid rgba(251,191,36,0.4);border-radius:0.5rem;padding:0.4rem 1.2rem;font-size:0.8rem;font-weight:700;color:#fbbf24;letter-spacing:0.05em;">
+                🎁 最初の7日間は無料
+            </span>
+        </div>
+        <div class="price"><sup>¥</sup>980<sub>/月</sub></div>
+        <div class="price-note">7日間無料 → 以降¥980/月 · PayPal自動更新 · いつでも解約可能</div>
+        <ul class="price-list">
+            <li>Ao v26.5.0 フルアクセス</li>
+            <li>感情・世界モデル・自律思考 全機能</li>
+            <li>動画プロジェクト支援</li>
+            <li>日本語形態素解析（kuromoji）</li>
+            <li>ブラウザ内永続記憶（プライバシー保護）</li>
+            <li>バージョンアップ時も継続利用可能</li>
+        </ul>
+
+        <!-- PayPalサブスクボタン -->
+        <div class="paypal-area">
+            <div class="paypal-area-label">SECURE PAYMENT VIA PAYPAL</div>
+            <div style="font-size:0.78rem;color:rgba(255,255,255,0.35);margin-bottom:1.25rem;">
+                最初の7日間は無料。その後¥980/月で自動更新。
+            </div>
+            <a href="https://www.paypal.com/webapps/billing/plans/subscribe?plan_id=P-3MT36199SM738773GNHGPVFI"
+               target="_blank"
+               style="display:block;width:100%;padding:1rem;background:linear-gradient(135deg,#009cde,#012169);color:#fff;border:none;border-radius:0.65rem;font-size:1rem;font-weight:700;cursor:pointer;text-decoration:none;text-align:center;box-shadow:0 4px 20px rgba(0,156,222,0.35);transition:opacity 0.2s,transform 0.2s;"
+               onmouseover="this.style.opacity='0.88';this.style.transform='translateY(-2px)'"
+               onmouseout="this.style.opacity='1';this.style.transform='translateY(0)'">
+                <span style="margin-right:0.5rem;">𝐏</span> PayPalで無料トライアルを開始
+            </a>
+            <div style="margin-top:0.85rem;font-size:0.7rem;color:rgba(255,255,255,0.2);font-family:'Space Mono',monospace;">
+                SSL SECURED · CANCEL ANYTIME
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FAQ -->
+<div class="section-full">
+    <div style="max-width:1200px;margin:0 auto;padding:0 0 2rem;">
+        <p class="sec-label reveal" style="text-align:center;">FAQ</p>
+        <h2 class="sec-title reveal" style="text-align:center;margin-bottom:4rem;">よくある<em>質問。</em></h2>
+    </div>
+    <div class="faq-list">
+        <div class="faq-item reveal">
+            <div class="faq-q">インターネット接続は必要ですか？</div>
+            <div class="faq-a">初回アクセス時のみ必要です。一度読み込めば基本機能はオフラインでも動作します。</div>
+        </div>
+        <div class="faq-item reveal">
+            <div class="faq-q">スマートフォンでも使えますか？</div>
+            <div class="faq-a">ブラウザがあれば動作します。PC・スマートフォン・タブレット対応。</div>
+        </div>
+        <div class="faq-item reveal">
+            <div class="faq-q">記憶はどこに保存されますか？</div>
+            <div class="faq-a">あなたのブラウザ（localStorage）に保存されます。外部サーバーには一切送信されません。ただし、ブラウザのキャッシュを削除すると記憶はリセットされます。</div>
+        </div>
+        <div class="faq-item reveal">
+            <div class="faq-q">解約はいつでもできますか？</div>
+            <div class="faq-a">PayPalの管理画面からいつでも即時解約可能です。日割り返金はありませんが、解約月末まで利用できます。</div>
+        </div>
+        <div class="faq-item reveal">
+            <div class="faq-q">別のブラウザやPCで使えますか？</div>
+            <div class="faq-a">アクセスはどの端末からも可能ですが、記憶はブラウザごとに別々に保存されます。端末をまたいで記憶を共有する機能は今後の対応予定です。</div>
+        </div>
+        <div class="faq-item reveal">
+            <div class="faq-q">動画編集ソフトは必要ですか？</div>
+            <div class="faq-a">動画プロジェクト支援機能を使う場合はAdobe Premiere ProまたはDaVinci Resolveが必要です。それ以外の機能は単独で動作します。</div>
+        </div>
+    </div>
+</div>
+
+<!-- FINAL CTA -->
+<div class="final-cta">
+    <h2 class="reveal">Aoと、<em style="font-style:normal;background:linear-gradient(90deg,var(--p),var(--pk));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">話してみる。</em></h2>
+    <p class="reveal">7日間無料 → その後¥980/月。いつでも解約できる。</p>
+    <a href="#pricing" class="btn-main reveal">今すぐはじめる</a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+    <div class="logo">Ao</div>
+    <p>© 2025 Ao Project · v26.5.0 · すべての記憶はあなたのブラウザに</p>
+</footer>
+
+<script>
+    // スクロールリビール
+    const obs = new IntersectionObserver(entries => {
+        entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('on'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
