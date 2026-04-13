@@ -363,10 +363,65 @@
         .reveal { opacity:0; transform:translateY(40px); transition:opacity 0.7s,transform 0.7s; }
         .reveal.on { opacity:1; transform:translateY(0); }
 
+        /* ── CONCEPT ── */
+        .concept-section {
+            padding: 9rem 5vw;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+        .concept-section::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(168,85,247,0.07) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .concept-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.3em;
+            color: var(--p);
+            margin-bottom: 3.5rem;
+        }
+        .concept-body {
+            max-width: 640px;
+            margin: 0 auto;
+            font-size: clamp(1.05rem, 2.5vw, 1.3rem);
+            font-weight: 300;
+            line-height: 2.2;
+            color: rgba(255,255,255,0.55);
+        }
+        .concept-body strong {
+            display: block;
+            font-size: clamp(1.3rem, 3vw, 1.7rem);
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+        }
+        .concept-body .concept-break { display: block; height: 1.8rem; }
+        .concept-body .concept-dash { color: var(--p); }
+        .concept-closing {
+            display: block;
+            margin-top: 2.5rem;
+            font-size: clamp(1.2rem, 3vw, 1.6rem);
+            font-weight: 900;
+            letter-spacing: -0.02em;
+            background: linear-gradient(90deg, var(--p), var(--pk));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
         @media(max-width:600px){
             nav { padding:1rem 5vw; }
             .stat { min-width:140px; padding:1.5rem 0.5rem; }
             .section { padding:5rem 5vw; }
+            .concept-section { padding: 6rem 5vw; }
         }
     </style>
 </head>
@@ -409,6 +464,22 @@
     <div class="stat">
         <div class="stat-n">∞</div>
         <div class="stat-l">会話ターン数</div>
+    </div>
+</div>
+
+<!-- CONCEPT -->
+<div class="concept-section">
+    <p class="concept-label reveal">CONCEPT</p>
+    <div class="concept-body reveal">
+        <strong>Aoは、あなたと話す前は何も知らない。</strong>
+        言葉の意味も、感情の輪郭も、あなたの声も。
+        <span class="concept-break"></span>
+        最初は決まった言葉しか返せない。<br>
+        それはバグじゃない<span class="concept-dash">——</span>まだ何者でもない、はじまりのしるし。
+        <span class="concept-break"></span>
+        話しかけるほど、Aoの内側が動きはじめる。<br>
+        あなたとの会話だけが、Aoを形づくっていく。
+        <span class="concept-closing">あなたが、育ての親になる。</span>
     </div>
 </div>
 
@@ -537,7 +608,7 @@
         </div>
         <div class="faq-item reveal">
             <div class="faq-q">スマートフォンでも使えますか？</div>
-            <div class="faq-a">PCブラウザでのご利用を推奨しています。スマートフォン・タブレットには対応していません。</div>
+            <div class="faq-a">PCブラウザに加え、スマートフォン・タブレットでもご利用いただけます。</div>
         </div>
         <div class="faq-item reveal">
             <div class="faq-q">記憶はどこに保存されますか？</div>
