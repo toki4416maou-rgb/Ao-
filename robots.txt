@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://toki4416maou-rgb.github.io/Ao-/sitemap.xml
