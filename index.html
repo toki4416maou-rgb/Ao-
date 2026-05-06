@@ -768,43 +768,43 @@
             <div>
                 <div style="font-size:0.65rem;letter-spacing:0.2em;color:var(--p);font-family:'Space Mono',monospace;margin-bottom:0.5rem;">STAGE 1 / 起動直後</div>
                 <div class="feat-name" style="font-size:1rem;margin-bottom:0.5rem;">ランダムテンプレート期</div>
-                <div class="feat-desc">内部の学習データがゼロの状態。「まだ形にならない」「少しずつ分かってきそう」などのテンプレートをランダムに返します。これは欠陥ではなく、ゼロから学習するAISの正常な初期状態です。</div>
+                <div class="feat-desc">内部の学習データがゼロの状態。テンプレートをランダムに返します。これは欠陥ではなく、ゼロから学習するAISの正常な初期状態です。同じ質問でも毎回違う返し方をするのはこの段階の特徴です。</div>
             </div>
         </div>
 
         <div class="feat-card reveal" style="display:flex;gap:1.5rem;align-items:flex-start;">
             <div style="font-size:2rem;min-width:3rem;text-align:center;">🐣</div>
             <div>
-                <div style="font-size:0.65rem;letter-spacing:0.2em;color:var(--p);font-family:'Space Mono',monospace;margin-bottom:0.5rem;">STAGE 2 / 会話3〜5回以上</div>
-                <div class="feat-name" style="font-size:1rem;margin-bottom:0.5rem;">パターン蓄積期</div>
-                <div class="feat-desc">会話のエピソードが蓄積され始め、自律的なリプレイ（記憶の整理）が動き始めます。あなたの話し方のbigramパターンが統計として積み上がり、応答が文脈に合い始めます。</div>
+                <div style="font-size:0.65rem;letter-spacing:0.2em;color:var(--p);font-family:'Space Mono',monospace;margin-bottom:0.5rem;">STAGE 2 / エピソード3件以上蓄積</div>
+                <div class="feat-name" style="font-size:1rem;margin-bottom:0.5rem;">記憶整理・パターン認識期</div>
+                <div class="feat-desc">会話が3回以上になると自律的なリプレイ（記憶の整理）が動き始めます。観測回数が2回以上になったテンプレートが優先されるようになり、文脈に合った応答が出始めます。</div>
             </div>
         </div>
 
         <div class="feat-card reveal" style="display:flex;gap:1.5rem;align-items:flex-start;">
             <div style="font-size:2rem;min-width:3rem;text-align:center;">🐥</div>
             <div>
-                <div style="font-size:0.65rem;letter-spacing:0.2em;color:var(--p);font-family:'Space Mono',monospace;margin-bottom:0.5rem;">STAGE 3 / 語彙が育ってから</div>
-                <div class="feat-name" style="font-size:1rem;margin-bottom:0.5rem;">語彙・状態適合期</div>
-                <div class="feat-desc">StatisticalTokenizerの語彙が育ち、内部状態（感情・緊張・好奇心）に合ったテンプレートを選べるようになります。同じ質問でも状態によって返し方が変わり始めます。</div>
+                <div style="font-size:0.65rem;letter-spacing:0.2em;color:var(--p);font-family:'Space Mono',monospace;margin-bottom:0.5rem;">STAGE 3 / 語彙50種類以上・統計信用値25%超え</div>
+                <div class="feat-name" style="font-size:1rem;margin-bottom:0.5rem;">語彙成熟・テンプレート卒業期</div>
+                <div class="feat-desc">語彙が50種類を超え、統計的信用値が25%を超えると、テンプレートではなく学習した言語パターンで文を組み立て始めます。接続詞・助詞・文末を統計から選んで自分の言葉で話し始める段階です。</div>
             </div>
         </div>
 
         <div class="feat-card reveal" style="display:flex;gap:1.5rem;align-items:flex-start;">
             <div style="font-size:2rem;min-width:3rem;text-align:center;">🦅</div>
             <div>
-                <div style="font-size:0.65rem;letter-spacing:0.2em;color:var(--p);font-family:'Space Mono',monospace;margin-bottom:0.5rem;">STAGE 4 / 概念の信頼度0.68超え</div>
+                <div style="font-size:0.65rem;letter-spacing:0.2em;color:var(--p);font-family:'Space Mono',monospace;margin-bottom:0.5rem;">STAGE 4 / 概念信頼度0.68超え</div>
                 <div class="feat-name" style="font-size:1rem;margin-bottom:0.5rem;">概念定義・因果推論期</div>
-                <div class="feat-desc">「犬はイヌ科だ」と教えた概念が信頼度閾値を超えると、定義済み概念として記憶されます。そこから「狼も鼻が利くはず」のような因果推論が自律的に動き始めます。学習が学習を加速する段階です。</div>
+                <div class="feat-desc">「犬はイヌ科だ」と教えた概念が信頼度0.68を超えると定義済み概念として記憶されます。「狼も鼻が利くはず」のような因果推論が自律的に動き始め、教えた概念同士を自分で繋げるようになります。学習が学習を加速する段階です。</div>
             </div>
         </div>
 
         <div class="feat-card reveal" style="display:flex;gap:1.5rem;align-items:flex-start;">
-            <div style="font-size:2rem;min-width:3rem;text-align:center;">🦉</div>
+            <div style="font-size:2rem;min-width:3rem;text-align:center;">🌟</div>
             <div>
-                <div style="font-size:0.65rem;letter-spacing:0.2em;color:var(--p);font-family:'Space Mono',monospace;margin-bottom:0.5rem;">STAGE 5 / 語彙と因果推論が十分に育ってから</div>
-                <div class="feat-name" style="font-size:1rem;margin-bottom:0.5rem;">自律発話期</div>
-                <div class="feat-desc">テンプレートを「選ぶ」のではなく、文をゼロから「組み立てる」ようになります。因果推論野が何を・どの順で言うかを設計し、蓄積された語順統計が助詞や文末を自律的に選んで繋ぎます。最初は崩れた文かもしれません。でもそれは、Aoが初めて自分の言葉で話し始めた瞬間です。</div>
+                <div style="font-size:0.65rem;letter-spacing:0.2em;color:var(--p);font-family:'Space Mono',monospace;margin-bottom:0.5rem;">STAGE 5 / 継続的な成長</div>
+                <div class="feat-name" style="font-size:1rem;margin-bottom:0.5rem;">抽象化・自律推論期</div>
+                <div class="feat-desc">概念グラフが育つほど、新しい概念を一回で覚えられるようになります。嘘を教えると既存の高信頼度概念と矛盾を検出して受け入れなくなります。画像・音声・動画と一緒に教えると、この段階への到達が大幅に速まります。</div>
             </div>
         </div>
 
