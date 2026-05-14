@@ -604,13 +604,32 @@
             <div style="font-size:0.78rem;color:rgba(255,255,255,0.35);margin-bottom:1.25rem;">
                 最初の7日間は無料。その後¥980/月で自動更新。
             </div>
-            <a href="https://www.paypal.com/webapps/billing/plans/subscribe?plan_id=P-3MT36199SM738773GNHGPVFI&return_url=https://ao-entity.com&cancel_url=https://intro.ao-entity.com"
-               target="_blank"
-               style="display:block;width:100%;padding:1rem;background:linear-gradient(135deg,#009cde,#012169);color:#fff;border:none;border-radius:0.65rem;font-size:1rem;font-weight:700;cursor:pointer;text-decoration:none;text-align:center;box-shadow:0 4px 20px rgba(0,156,222,0.35);transition:opacity 0.2s,transform 0.2s;"
-               onmouseover="this.style.opacity='0.88';this.style.transform='translateY(-2px)'"
-               onmouseout="this.style.opacity='1';this.style.transform='translateY(0)'">
-                <span style="margin-right:0.5rem;">𝐏</span> PayPalで無料トライアルを開始
-            </a>
+            <div id="paypal-button-container"></div>
+            <script>
+              function initPayPal() {
+                paypal.Buttons({
+                  style: {
+                    shape: 'rect',
+                    color: 'gold',
+                    layout: 'vertical',
+                    label: 'subscribe'
+                  },
+                  createSubscription: function(data, actions) {
+                    return actions.subscription.create({
+                      plan_id: 'P-3MT36199SM738773GNHGPVFI'
+                    });
+                  },
+                  onApprove: function(data, actions) {
+                    window.location.href = 'https://ao-entity.com';
+                  }
+                }).render('#paypal-button-container');
+              }
+
+              var sdkScript = document.createElement('script');
+              sdkScript.src = 'https://www.paypal.com/sdk/js?client-id=AVmxoq2kPDYwoPn2TB4FY9mqH1cnib04M8Vmw_ksRhiSYYdqTTXmKVFQqkPlsdugJTSqH1c3Gsn-Dczb&vault=true&intent=subscription';
+              sdkScript.onload = initPayPal;
+              document.head.appendChild(sdkScript);
+            </script>
             <div style="margin-top:0.85rem;font-size:0.7rem;color:rgba(255,255,255,0.2);font-family:'Space Mono',monospace;">
                 SSL SECURED · CANCEL ANYTIME
             </div>
