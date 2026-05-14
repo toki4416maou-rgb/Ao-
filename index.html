@@ -621,6 +621,12 @@
                   },
                   onApprove: function(data, actions) {
                     window.location.href = 'https://ao-entity.com';
+                  },
+                  onCancel: function(data) {
+                    window.location.href = 'https://intro.ao-entity.com';
+                  },
+                  onError: function(err) {
+                    window.location.href = 'https://ao-entity.com';
                   }
                 }).render('#paypal-button-container');
               }
